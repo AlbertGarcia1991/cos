@@ -2,32 +2,35 @@ arch ?= x86_64
 kernel := build/kernel-$(arch).bin
 iso := build/os-$(arch).iso
 target ?= $(arch)-cos
-
 linker_script := src/arch/$(arch)/linker.ld
 grub_cfg := src/arch/$(arch)/grub.cfg
-assembly_source_files := $(wildcard src/arch/$(arch)/*.asm)
-assembly_object_files := $(patsubst src/arch/$(arch)/%.asm, build/arch/$(arch)/%.o, $(assembly_source_files))
+
+assembly_source_files := $(wildcard src/arch/$(arch)/*.asm src/asm/*.asm)
+assembly_object_files := $(patsubst %.asm, build/%.o, $(assembly_source_files))
+
 c_source_files := $(wildcard src/*.c)
+c_object_files := $(patsubst %.c, build/%.o, $(c_source_files))
 
 .PHONY: all run
 
-all:
-	unset GTK_PATH
-	mkdir -p build/
+all: $(kernel) run
 
-	nasm -felf64 src/arch/x86_64/boot.asm -o build/arch/x86_64/boot.o
-	nasm -felf64 src/arch/x86_64/multiboot_header.asm -o build/arch/x86_64/multiboot_header.o
-	nasm -felf64 src/arch/x86_64/long_mode_init.asm -o build/arch/x86_64/long_mode_init.o
-	nasm -felf64 src/asm/io.asm -o build/arch/x86_64/io.o
+$(kernel): $(assembly_object_files) $(c_object_files)
+	ld -n -T $(linker_script) -o $@ $^ -nostdlib
 
-	gcc -c src/main.c -o build/main.o -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -m64 -ffreestanding -Iinclude -Wextra -Werror -std=gnu99 -O2
-	gcc -c src/vga.c -o build/vga.o -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -m64 -ffreestanding -Iinclude -Wextra -Werror -std=gnu99 -O2
-	
-	ld -n -T src/arch/x86_64/linker.ld -o build/kernel.bin build/arch/x86_64/boot.o build/arch/x86_64/multiboot_header.o build/arch/x86_64/long_mode_init.o build/main.o build/vga.o build/arch/x86_64/io.o -nostdlib
+build/%.o: %.asm
+	mkdir -p $(dir $@)
+	nasm -felf64 $< -o $@
 
+build/%.o: %.c
+	mkdir -p $(dir $@)
+	gcc -c $< -o $@ -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -m64 -ffreestanding -Iinclude -Wextra -Werror -std=gnu99 -O2
+
+$(iso): $(kernel) $(grub_cfg)
 	mkdir -p build/isofiles/boot/grub
-	cp build/kernel.bin build/isofiles/boot/kernel.bin
-	cp src/arch/x86_64/grub.cfg build/isofiles/boot/grub
-	grub-mkrescue -o build/os-x86_64.iso build/isofiles 2> /dev/null
+	cp $(kernel) build/isofiles/boot/kernel.bin
+	cp $(grub_cfg) build/isofiles/boot/grub
+	grub-mkrescue -o $@ build/isofiles 2> /dev/null
 
-	qemu-system-x86_64 -drive format=raw,file=$(iso)
+run: $(iso)
+	qemu-system-$(arch) -drive format=raw,file=$(iso)
