@@ -5,26 +5,30 @@ target ?= $(arch)-cos
 linker_script := src/arch/$(arch)/linker.ld
 grub_cfg := src/arch/$(arch)/grub.cfg
 
+NASM_FLAGS = -felf64
+C_FLAGS = -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -m64 -ffreestanding -Iinclude -Wall -Wextra -Werror -std=gnu99 -O2
+LINKER_FLAGS = -nostdlib
+
 assembly_source_files := $(wildcard src/arch/$(arch)/*.asm src/asm/*.asm)
 assembly_object_files := $(patsubst %.asm, build/%.o, $(assembly_source_files))
 
 c_source_files := $(wildcard src/*.c)
 c_object_files := $(patsubst %.c, build/%.o, $(c_source_files))
 
-.PHONY: all run
+.PHONY: all run clean kernel iso build
 
 all: $(kernel) run
 
 $(kernel): $(assembly_object_files) $(c_object_files)
-	ld -n -T $(linker_script) -o $@ $^ -nostdlib
+	ld -n -T $(linker_script) -o $@ $^ $(LINKER_FLAGS)
 
 build/%.o: %.asm
 	mkdir -p $(dir $@)
-	nasm -felf64 $< -o $@
+	nasm $(NASM_FLAGS) $< -o $@
 
 build/%.o: %.c
 	mkdir -p $(dir $@)
-	gcc -c $< -o $@ -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -m64 -ffreestanding -Iinclude -Wextra -Werror -std=gnu99 -O2
+	gcc -c $< -o $@ $(C_FLAGS)
 
 $(iso): $(kernel) $(grub_cfg)
 	mkdir -p build/isofiles/boot/grub
@@ -34,3 +38,6 @@ $(iso): $(kernel) $(grub_cfg)
 
 run: $(iso)
 	qemu-system-$(arch) -drive format=raw,file=$(iso)
+
+clean:
+	rm -r build

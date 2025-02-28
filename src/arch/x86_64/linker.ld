@@ -1,7 +1,7 @@
 ENTRY(start)    /* Entry point where bootloader will jump after loading the kernel */
 
 SECTIONS {
-    . = 1M;     /* Load address of the first section to 1Mb (convention for kernels) */
+    . = 2M;     /* Load address of the first section to 2Mb (convention for kernels) */
 
     .boot :
     {
