@@ -1,8 +1,8 @@
 #ifndef H_STDUTILS
 #define H_STDUTILS
 
-#include <stddef.h>
+#include "typedef.h"
 
-size_t strlen(const char* str);
+usize_t strlen(const char* str);
 
 #endif

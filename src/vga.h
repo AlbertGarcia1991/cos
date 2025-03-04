@@ -2,13 +2,13 @@
 #define VGA_H
 
 #include <stdint.h>
-#include <stddef.h>
+#include "typedef.h"
 
 extern void outb(uint16_t port, uint8_t val);
 
 extern uint16_t* const VGA_BUFFER;
-extern const size_t VGA_WIDTH;
-extern const size_t VGA_HEIGHT;
+extern const usize_t VGA_WIDTH;
+extern const usize_t VGA_HEIGHT;
 
 enum TERMINAL_COLORS {
 	TERMINAL_COLOR_BLACK = 0,
@@ -38,25 +38,25 @@ typedef struct vga_color vga_color_t;
 
 
 struct vga_char {
-    unsigned char character;
+    uchar_t character;
     vga_color_t color;
 };
 typedef struct vga_char vga_char_t;
 
 struct cursor {
-    size_t x;
-    size_t y;
+    usize_t x;
+    usize_t y;
 };
 typedef struct cursor cursor_t;
 
 vga_color_t vga_get_color(terminal_colors_t text_color, terminal_colors_t background_color);
-vga_char_t vga_get_char(unsigned char character, vga_color_t color);
+vga_char_t vga_get_char(uchar_t character, vga_color_t color);
 
-cursor_t terminal_cursor_index_to_position(size_t index);
-size_t terminal_cursor_position_to_index(cursor_t cursor);
-size_t terminal_get_cursor_index(void);
+cursor_t terminal_cursor_index_to_position(usize_t index);
+usize_t terminal_cursor_position_to_index(cursor_t cursor);
+usize_t terminal_get_cursor_index(void);
 void terminal_reset_cursor(void);
-void terminal_move_cursor(size_t x, size_t y);
+void terminal_move_cursor(usize_t x, usize_t y);
 void terminal_advance_cursor(void);
 void terminal_newline(void);
 void terminal_retrocede_cursor(void);
@@ -67,6 +67,6 @@ void terminal_set_color(vga_color_t color);
 
 void terminal_put_char(char c);
 void terminal_delete_char(void);
-void terminal_write(const char* data);
+void terminal_write(const str_t data);
 
 #endif
