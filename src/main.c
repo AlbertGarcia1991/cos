@@ -5,15 +5,9 @@
 #include "tests/tests.c"
 
 #include "vga.h"
-// #include "stdutils.h"
+#include "stdutils.h"
 
-size_t strlen(const char* str) 
-{
-	size_t len = 0;
-	while (str[len])
-		len++;
-	return len;
-}
+
 
 void kernel_main(void) {
     terminal_initialize();
