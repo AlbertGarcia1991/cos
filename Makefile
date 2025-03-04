@@ -40,4 +40,4 @@ run: $(iso)
 	qemu-system-$(arch) -drive format=raw,file=$(iso)
 
 clean:
-	rm -r build
+	rm -rf build
