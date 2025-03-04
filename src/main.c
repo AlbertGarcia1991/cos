@@ -12,7 +12,7 @@
 void kernel_main(void) {
     terminal_initialize();
 
-    test_functon_vga_basic();
+    test_function_vga_basic();
 
 	while (1) {
     }

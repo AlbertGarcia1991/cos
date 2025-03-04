@@ -1,7 +1,7 @@
 #include "../vga.h"
 
 
-void test_functon_vga_basic(void) {
+void test_function_vga_basic(void) {
     terminal_write("hello");
     terminal_move_cursor(0, 2);
     terminal_put_char('a');
