@@ -1,12 +1,13 @@
-; filepath: /home/agplaza/Desktop/cos/src/io.asm
+section .text
 global outb
 
-section .text
+; void outb(unsigned short port, unsigned char val)
 outb:
-    ; Function parameters:
-    ;   - port: dx
-    ;   - val: al
-    mov dx, [esp + 4]  ; Load the port number into dx
-    mov al, [esp + 8]  ; Load the value into al
-    out dx, al         ; Output the value to the port
-    ret
+    ; Arguments:
+    ; port - [esp + 4]
+    ; val  - [esp + 8]
+
+    mov edx, [esp + 4]  ; Load port into edx
+    mov al, [esp + 8]   ; Load value into al
+    out dx, al          ; Output value to port
+    ret                 ; Return from function

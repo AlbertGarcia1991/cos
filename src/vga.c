@@ -97,7 +97,7 @@ void terminal_write(const char* data) {
 }
 
 void terminal_initialize(void) {
-    terminal_color = vga_get_color(TERMINAL_COLOR_RED, TERMINAL_COLOR_LIGHT_BROWN);
+    terminal_color = vga_get_color(TERMINAL_COLOR_LIGHT_GREY, TERMINAL_COLOR_BLACK);
     terminal_move_cursor(0, 0);
     terminal_clear();
 }

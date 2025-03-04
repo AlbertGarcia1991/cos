@@ -15,7 +15,7 @@ size_t strlen(const char* str)
 	return len;
 }
 
-void entry_point(void) {
+void kernel_main(void) {
     terminal_initialize();
 
     test_functon_vga_basic();
