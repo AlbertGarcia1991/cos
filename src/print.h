@@ -12,7 +12,10 @@ struct Stream {
 typedef struct Stream stream_t;
 
 // To stdout
+void print(const str_t string);
+void println(const str_t string);
 void printf(const str_t format, ...);
+void printfln(const str_t format, ...);
 
 // To given array
 ssize_t sprintf(str_t buffer, const str_t format, ...);

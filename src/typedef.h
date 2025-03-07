@@ -1,6 +1,8 @@
 #ifndef H_TYPEDEF
 #define H_TYPEDEF
 
+#define DEFAULT_FLOAT_PRECISION     6
+
 #define true    1
 #define false   0
 

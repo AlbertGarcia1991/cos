@@ -6,7 +6,7 @@ linker_script := src/arch/$(arch)/linker.ld
 grub_cfg := src/arch/$(arch)/grub.cfg
 
 NASM_FLAGS = -felf64
-C_FLAGS = -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -m64 -ffreestanding -Iinclude -Wall -Wextra -Werror -std=gnu99 -O2
+C_FLAGS = -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -m64 -ffreestanding -Iinclude -Wextra -Werror -std=gnu99 -O2
 LINKER_FLAGS = -nostdlib
 
 assembly_source_files := $(wildcard src/arch/$(arch)/*.asm src/asm/*.asm)
